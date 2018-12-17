@@ -1,12 +1,42 @@
-import java.util.HashSet;
-import java.util.Set;
+package main.java;
 
-class FindAllDivisors { 
-	  
+import java.util.Set;
+import java.util.TreeSet;
+
+import uk.ydubey.formatter.numtoword.NumberInWordsFormatter;
+
+public class FindAllDivisors {
+
     // Function will find all divisors
-    static Set<Integer> findDivisors(int num){ 
+    private static Set<Integer> findDivisors(int num){ 
+   
+        class NumberSet extends TreeSet<Integer> {
+
+        	private static final long serialVersionUID = 1L;
+
+        	public String toString() {
+        		
+        		String retVal = "";        		
+        		final String AND = " and ";
+        		
+        		StringBuilder toStringBuilder = new StringBuilder();
+        		this.forEach(num -> {
+        			
+        			toStringBuilder.append(NumberInWordsFormatter.getInstance().format(num))
+        						   .append(AND);
+        		});
+        		
+        		int endIndex = toStringBuilder.lastIndexOf(AND);
+        		if(endIndex != -1){
+        			retVal = toStringBuilder.substring(0, endIndex) + '.';
+        		}else{
+        			retVal = toStringBuilder.toString();
+        		}
+        		return retVal;
+        	}
+        }    	
     	
-    	Set<Integer> divisors = new HashSet<Integer>();
+    	Set<Integer> divisors = new NumberSet();
     	int max = (int) Math.sqrt(num);
     	int dividedResult = 0;
         for(int iCur = 1; iCur <= max; iCur++) { 
@@ -24,16 +54,21 @@ class FindAllDivisors {
   
     public static void main(String[] args){ 
 
+    	final String NUMLABEL = "The Number '";
+    	final String DIVISIBLEHEADING = "' is divisible by ";
+    	
     	for(int iCur = 1; iCur <= 100; iCur++) {
     		Set<Integer> divisors = findDivisors(iCur);
     		if(	(divisors.size() == 1  && divisors.size() > 0)) {
     			if(divisors.contains(1)){
-    				System.out.println("1 is an odd number");
+    				System.out.println("The number '1' is odd.");
     			}else if(divisors.contains(2)) {
-    				System.out.println("2 is an even number");
-    			}    				
+    				System.out.println("The number '2' is even.");
+    			} else{
+    				System.out.println(NUMLABEL + iCur + DIVISIBLEHEADING + divisors.toString());
+    			}
     		}else {
-        		System.out.println(divisors.toString());
+    			System.out.println(NUMLABEL + iCur + DIVISIBLEHEADING + divisors.toString());
         	}    		
     	}
     } 
