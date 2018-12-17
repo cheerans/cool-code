@@ -1,87 +1,100 @@
+package main.java;
+
+
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.IntStream;
 
 public class ThreadsConcept{
 	
-	private int SLEEPTIMEOUT = 10;
-	private int NOOFTASKS = 2;
 	
-	public class PrintThread extends Thread{
-		
-		private AtomicBoolean shutdown = null;
-		private CountDownLatch latch = null;
-		private BlockingQueue<Integer> wrkQueue;
-		private long sleepTimeout = 10;
+	private static int NOOFTASKS = 2;
+	
+	private static ExecutorService taskExecutor = new ThreadPoolExecutor(	NOOFTASKS, 
+																			NOOFTASKS,
+																            0L, 
+																            TimeUnit.MILLISECONDS,
+																            new LinkedBlockingQueue<Runnable>() );
+	
 
-		public PrintThread(	AtomicBoolean shutdown, 
-							CountDownLatch latch, 
-							BlockingQueue<Integer> wrkQueue,
-							long sleepTimeout) {
+	static final String signal = new String("Signal");
+	
+    public static void main(String[] args){
+    	
+    	createThreadPool();
+    	taskExecutor.shutdown();
+    	try {
+			taskExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			
+		}
+    	System.out.println("Shutdown Threadpool done");
+    }
+    
+	public static void createThreadPool() {
+		
+		BlockingQueue<Integer> queue1 = new LinkedBlockingDeque<Integer>();
+		BlockingQueue<Integer> queue2 = new LinkedBlockingDeque<Integer>();
+		
+		for(int iCur : IntStream.range(1, 101).toArray()){
+			if(iCur %2 == 0){
+				queue2.add(iCur);				
+			}else{
+				queue1.add(iCur);
+			}
+		}		
+        taskExecutor.execute(new PrintThread(signal, queue1));
+        try {
+        	synchronized(signal){
+        		signal.wait();
+        	}
+		} catch (InterruptedException e) {
+		}
+        taskExecutor.execute(new PrintThread(signal, queue2));
+	}   
+	
+	public static class PrintThread implements Runnable{
+		
+		private String signal;
+		private BlockingQueue<Integer> wrkQueue;
+
+		public PrintThread(	String signal, 
+							BlockingQueue<Integer> wrkQueue) {
 			super();
-			this.shutdown = shutdown;
-			this.latch = latch;
+			this.signal = signal;
 			this.wrkQueue = wrkQueue;
-			this.sleepTimeout = sleepTimeout;
 		}
 
 		@Override
 		public void run() {
 			
-			int number;
-			while(shutdown.get() == false) {
+			final String THREADLABEL = "Thread ";
+			final String NUMBERLABEL = ": The number is '";
+			final String QUOTES = "'";
+			final String ENDTHREADMSG = "Ending thread ";
 				
-		        try {	    		
+			while(wrkQueue.size() > 0) {
+				
+		        try {	
+		        	
 					if(null != wrkQueue) {
-						number = wrkQueue.take();
-						System.out.println(number);
+						System.out.println(new StringBuilder().append(THREADLABEL).append(Thread.currentThread().getId()).append(NUMBERLABEL).append(wrkQueue.take()).append(QUOTES));
+					}	
+					synchronized(signal){
+						signal.notifyAll();
+						signal.wait();
 					}
-					Thread.sleep(sleepTimeout);
-		        } catch (InterruptedException e) {
-
-		        }
+				} catch (InterruptedException e) {
+				}
 			}
-			latch.countDown();
+			synchronized(signal){				
+				signal.notifyAll();
+			}	
+			System.out.println(ENDTHREADMSG + Thread.currentThread().getId());
 		}
 	}
-	
-	private ExecutorService taskExecutor = new ThreadPoolExecutor(	NOOFTASKS, 
-																	NOOFTASKS,
-														            0L, 
-														            TimeUnit.MILLISECONDS,
-														            new LinkedBlockingQueue<Runnable>() );
-	
-	private static AtomicBoolean shutdown = new AtomicBoolean(false);
-	private CountDownLatch latch = null;
-	    
-	public ThreadsConcept() {
-		
-		super();
-		createThreadPool();
-	}
-
-	public void createThreadPool() {			
-		
-		// We will rely on a countdown latch to create/shutdown the threads
-		latch = new CountDownLatch(NOOFTASKS);
-		BlockingQueue<Integer> queue = new LinkedBlockingDeque<Integer>();
-		Thread wt = new PrintThread(shutdown, latch, queue, SLEEPTIMEOUT);
-        taskExecutor.execute(wt);
-	}
-	
-    public void shutdown() {
-    	
-    	shutdown.set(true);
-        try {
-			latch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-        taskExecutor.shutdown();	
-    }
 }
