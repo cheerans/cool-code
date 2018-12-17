@@ -15,10 +15,14 @@ public class ThreadsConcept{
 	private static int NOOFTASKS = 2;
 	
 	private static ExecutorService taskExecutor = new ThreadPoolExecutor(	NOOFTASKS, 
-																			NOOFTASKS,
-																            0L, 
-																            TimeUnit.MILLISECONDS,
-																            new LinkedBlockingQueue<Runnable>() );
+										NOOFTASKS,
+										0L, 
+										TimeUnit.MILLISECONDS,
+										new LinkedBlockingQueue<Runnable>() );
+										NOOFTASKS,
+										0L, 
+										TimeUnit.MILLISECONDS,
+										new LinkedBlockingQueue<Runnable>() );
 	
 
 	static final String signal = new String("Signal");
@@ -47,14 +51,14 @@ public class ThreadsConcept{
 				queue1.add(iCur);
 			}
 		}		
-        taskExecutor.execute(new PrintThread(signal, queue1));
-        try {
-        	synchronized(signal){
+        	taskExecutor.execute(new PrintThread(signal, queue1));
+        	try {
+        		synchronized(signal){
         		signal.wait();
-        	}
+        		}
 		} catch (InterruptedException e) {
 		}
-        taskExecutor.execute(new PrintThread(signal, queue2));
+        	taskExecutor.execute(new PrintThread(signal, queue2));
 	}   
 	
 	public static class PrintThread implements Runnable{
@@ -79,10 +83,14 @@ public class ThreadsConcept{
 				
 			while(wrkQueue.size() > 0) {
 				
-		        try {	
+		        	try {	
 		        	
 					if(null != wrkQueue) {
-						System.out.println(new StringBuilder().append(THREADLABEL).append(Thread.currentThread().getId()).append(NUMBERLABEL).append(wrkQueue.take()).append(QUOTES));
+						System.out.println(new StringBuilder().append(THREADLABEL).
+								   		       append(Thread.currentThread().getId()).
+								                       append(NUMBERLABEL).
+								                       append(wrkQueue.take()).
+								                       append(QUOTES));
 					}	
 					synchronized(signal){
 						signal.notifyAll();
