@@ -19,10 +19,6 @@ public class ThreadsConcept{
 										0L, 
 										TimeUnit.MILLISECONDS,
 										new LinkedBlockingQueue<Runnable>() );
-										NOOFTASKS,
-										0L, 
-										TimeUnit.MILLISECONDS,
-										new LinkedBlockingQueue<Runnable>() );
 	
 
 	static final String signal = new String("Signal");
