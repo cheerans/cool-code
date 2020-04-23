@@ -59,6 +59,8 @@ public class SQLInjectionUtilTests {
 		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
 		objSQLInjected = new TestSQLInjectionEntity("","",INJECTED_REVIEW_SQL);
 		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
+		objSQLInjected = new TestSQLInjectionEntity("sdan","3","sken");
+		assert(false == FormUtils.checkSQLInjectionForForm(objSQLInjected));
 	}
 	
 	private List<String> getReservedWords(){
