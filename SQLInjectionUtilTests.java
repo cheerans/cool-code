@@ -4,31 +4,61 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import SQLInjectionScannerUtil;
+import com.ssnc.dbservices.utils.SecurityUtils;
 
 public class SQLInjectionUtilTests {
 	
 	public static String [] reservedWords = null;
+	
+	static String INJECTED_USER_SQL = "mlance;select order by 1";
+	static String INJECTED_CATALOGID_SQL = "mlance; drop product";
+	static String INJECTED_REVIEW_SQL = "sjohn; union  by 1";
 
 	@Test
-	public void contextLoads() {
+	public void testSQLInjection() {
 		
 		List<String> reservedWords = getReservedWords();
-		String deinjectSample = "select order by 1";
-		String deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
+		String deinjectSample = INJECTED_USER_SQL;
+		String deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
-		deinjectSample = "bsmith; drop product";
-		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
+		deinjectSample = INJECTED_CATALOGID_SQL;
+		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
-		deinjectSample = "bsmith; union  by 1";
-		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
+		deinjectSample = INJECTED_REVIEW_SQL;
+		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));		
+	}
+	
+	@Test
+	public void testFormSQLInjection() {
+		
+		class TestSQLInjectionEntity{
+			
+			private String userid;
+			private String catalogid;
+			private String reviewid;
+			
+			public TestSQLInjectionEntity(String userid, String catalogid, String reviewid) {
+				
+				super();
+				this.userid = userid;
+				this.catalogid = catalogid;
+				this.reviewid = reviewid;
+			}			
+		}
+		
+		TestSQLInjectionEntity objSQLInjected = new TestSQLInjectionEntity(INJECTED_USER_SQL,INJECTED_CATALOGID_SQL,INJECTED_REVIEW_SQL);
+		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
+		objSQLInjected = new TestSQLInjectionEntity(INJECTED_USER_SQL,"","");
+		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
+		objSQLInjected = new TestSQLInjectionEntity("",INJECTED_CATALOGID_SQL,"");
+		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
+		objSQLInjected = new TestSQLInjectionEntity("","",INJECTED_REVIEW_SQL);
+		assert(true == SecurityUtils.checkSQLInjectionForForm(objSQLInjected));
 	}
 	
 	private List<String> getReservedWords(){
