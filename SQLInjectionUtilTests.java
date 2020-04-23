@@ -19,15 +19,15 @@ public class SQLInjectionUtilTests {
 		
 		List<String> reservedWords = getReservedWords();
 		String deinjectSample = "select order by 1";
-		String deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		String deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
 		deinjectSample = "mlance; drop product";
-		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
 		deinjectSample = "mlance; union  by 1";
-		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));		
 	}
