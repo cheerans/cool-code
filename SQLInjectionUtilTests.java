@@ -1,5 +1,3 @@
-package com.ssnc.dbservices.dbservice;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.ssnc.dbservices.utils.SecurityUtils;
+import SQLInjectionScannerUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SQLInjectionUtilTests {
