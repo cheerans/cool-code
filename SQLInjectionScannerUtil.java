@@ -36,7 +36,7 @@ public class SQLInjectionScannerUtil {
 						if(false == fieldVal.equals(modVal)){				
 							bSqlInjectionDetected = true;								
 						}						
-						inField.set(formBean, deInjectSQLInFieldValue(modVal));
+						inField.set(formBean, modVal);
 						fld.setAccessible(false);
 						inField.setAccessible(false);
 					} catch (Exception e) {
