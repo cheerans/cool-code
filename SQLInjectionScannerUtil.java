@@ -1,4 +1,4 @@
-package com.ssnc.dbservices.utils;
+package com.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
