@@ -11,7 +11,7 @@ public class SQLInjectionUtilTests {
 	
 	public static String [] reservedWords = null;
 	
-	static String INJECTED_USER_SQL = "mlance;select order by 1";
+	static String INJECTED_USER_SQL = "mlance and 1=1;";
 	static String INJECTED_CATALOGID_SQL = "mlance; drop product";
 	static String INJECTED_REVIEW_SQL = "sjohn; union  by 1";
 
