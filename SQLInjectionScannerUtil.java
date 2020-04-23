@@ -23,10 +23,10 @@ public class SQLInjectionScannerUtil {
 			String fieldVal = "";
 			String modVal = "";
 			for (Field fld : fields) {
-				if (	(false == Modifier.isTransient(fld.getModifiers()))
-					&& 	(false == Modifier.isFinal(fld.getModifiers()))
-					&& 	(fld.getType().equals(String.class))) {
-					fld.setAccessible(true);
+				if (	(false == Modifier.isTransient(fld.getModifiers())) && 	
+				    	(false == Modifier.isFinal(fld.getModifiers())) && 	
+				    	(fld.getType().equals(String.class))) {
+					
 					try {
 						fld.setAccessible(true);
 						inField = formBean.getClass().getDeclaredField(fld.getName());
