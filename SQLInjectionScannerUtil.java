@@ -14,7 +14,7 @@ public class SQLInjectionScannerUtil {
 		return java.util.regex.Pattern.compile(regExSQLInject, java.util.regex.Pattern.CASE_INSENSITIVE).matcher(sqlMaybeInjected).replaceAll("");
 	}
 	
-	public static boolean deInjectSQLInFieldValue(Object formBean) {
+	public static boolean checkSQLInjectionForForm(Object formBean) {
 		
 		boolean bSqlInjectionDetected = false;
 		if (null != formBean) {
@@ -35,8 +35,7 @@ public class SQLInjectionScannerUtil {
 						modVal = deInjectSQLInFieldValue(fieldVal);
 						if(false == fieldVal.equals(modVal)){				
 							bSqlInjectionDetected = true;								
-						}						
-						inField.set(formBean, modVal);
+						}				
 						fld.setAccessible(false);
 						inField.setAccessible(false);
 					} catch (Exception e) {
