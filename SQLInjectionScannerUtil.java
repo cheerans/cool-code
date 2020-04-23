@@ -14,7 +14,7 @@ public class SQLInjectionScannerUtil {
 		return java.util.regex.Pattern.compile(regExSQLInject, java.util.regex.Pattern.CASE_INSENSITIVE).matcher(sqlMaybeInjected).replaceAll("");
 	}
 	
-	public static boolean deInjectSQLForForm(Object formBean) {
+	public static boolean deInjectSQLInFieldValue(Object formBean) {
 		
 		boolean bSqlInjectionDetected = false;
 		if (null != formBean) {
