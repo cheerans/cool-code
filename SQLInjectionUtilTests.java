@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import SQLInjectionScannerUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 public class SQLInjectionUtilTests {
 	
 	public static String [] reservedWords = null;
@@ -22,11 +21,11 @@ public class SQLInjectionUtilTests {
 		String deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
-		deinjectSample = "mlance; drop product";
+		deinjectSample = "bsmith; drop product";
 		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));
-		deinjectSample = "mlance; union  by 1";
+		deinjectSample = "bsmith; union  by 1";
 		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		assert(false == deinjectRes.equals(deinjectSample));
 		assert(false == reservedWords.contains(deinjectRes));		
