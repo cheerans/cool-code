@@ -28,16 +28,12 @@ public class SQLInjectionScannerUtil {
 				    	(fld.getType().equals(String.class))) {
 					
 					try {
-						fld.setAccessible(true);
 						inField = formBean.getClass().getDeclaredField(fld.getName());
-						inField.setAccessible(true);
 						fieldVal = fld.get(formBean).toString();
 						modVal = deInjectSQLInFieldValue(fieldVal);
 						if(false == fieldVal.equals(modVal)){				
 							bSqlInjectionDetected = true;								
 						}				
-						fld.setAccessible(false);
-						inField.setAccessible(false);
 					} catch (Exception e) {
 					}
 				}
