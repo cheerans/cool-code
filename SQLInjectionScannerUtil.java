@@ -19,7 +19,6 @@ public class SQLInjectionScannerUtil {
 		boolean bSqlInjectionDetected = false;
 		if (null != formBean) {
 			List<Field> fields = getFieldsArray(formBean.getClass());
-			Field inField = null;
 			String fieldVal = "";
 			String modVal = "";
 			for (Field fld : fields) {
@@ -28,7 +27,6 @@ public class SQLInjectionScannerUtil {
 				    	(fld.getType().equals(String.class))) {
 					
 					try {
-						inField = formBean.getClass().getDeclaredField(fld.getName());
 						fieldVal = fld.get(formBean).toString();
 						modVal = deInjectSQLInFieldValue(fieldVal);
 						if(false == fieldVal.equals(modVal)){				
