@@ -21,15 +21,15 @@ public class SQLInjectionUtilTests {
 		
 		List<String> reservedWords = getReservedWords();
 		String deinjectSample = INJECTED_USER_SQL;
-		String deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		String deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		Assert.assertFalse(deinjectRes.equals(deinjectSample));
 		Assert.assertFalse(reservedWords.contains(deinjectRes));
 		deinjectSample = INJECTED_CATALOGID_SQL;
-		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		Assert.assertFalse(deinjectRes.equals(deinjectSample));
 		Assert.assertFalse(reservedWords.contains(deinjectRes));
 		deinjectSample = INJECTED_REVIEW_SQL;
-		deinjectRes = SecurityUtils.deInjectSQLInFieldValue(deinjectSample);
+		deinjectRes = SQLInjectionScannerUtil.deInjectSQLInFieldValue(deinjectSample);
 		Assert.assertFalse(deinjectRes.equals(deinjectSample));
 		Assert.assertFalse(reservedWords.contains(deinjectRes));		
 	}
@@ -52,16 +52,16 @@ public class SQLInjectionUtilTests {
 			}			
 		}
 		
-		Assert.assertTrue(SecurityUtils.checkSQLInjectionForForm(new TestSQLInjectionEntity(INJECTED_USER_SQL,INJECTED_CATALOGID_SQL,INJECTED_REVIEW_SQL)));
-		Assert.assertTrue(SecurityUtils.checkSQLInjectionForForm(new TestSQLInjectionEntity(INJECTED_USER_SQL,"","")));
-		Assert.assertTrue(SecurityUtils.checkSQLInjectionForForm(new TestSQLInjectionEntity("",INJECTED_CATALOGID_SQL,"")));
-		Assert.assertTrue(SecurityUtils.checkSQLInjectionForForm(new TestSQLInjectionEntity("","",INJECTED_REVIEW_SQL)));
-		Assert.assertFalse(SecurityUtils.checkSQLInjectionForForm(new TestSQLInjectionEntity("sken","3","sdan")));
+		Assert.assertTrue(SQLInjectionScannerUtil.checkSQLInjectionForForm(new TestSQLInjectionEntity(INJECTED_USER_SQL,INJECTED_CATALOGID_SQL,INJECTED_REVIEW_SQL)));
+		Assert.assertTrue(SQLInjectionScannerUtil.checkSQLInjectionForForm(new TestSQLInjectionEntity(INJECTED_USER_SQL,"","")));
+		Assert.assertTrue(SQLInjectionScannerUtil.checkSQLInjectionForForm(new TestSQLInjectionEntity("",INJECTED_CATALOGID_SQL,"")));
+		Assert.assertTrue(SQLInjectionScannerUtil.checkSQLInjectionForForm(new TestSQLInjectionEntity("","",INJECTED_REVIEW_SQL)));
+		Assert.assertFalse(SQLInjectionScannerUtil.checkSQLInjectionForForm(new TestSQLInjectionEntity("sken","3","sdan")));
 	}
 	
 	private List<String> getReservedWords(){
 		
-		String[] reservedWords = SecurityUtils.regExSQLInject.split("\\|");
+		String[] reservedWords = SQLInjectionScannerUtil.regExSQLInject.split("\\|");
 		if(null != reservedWords){
 			for(int iCur = 0; iCur < reservedWords.length; iCur++){
 				if(	(null != reservedWords[iCur]) &&
