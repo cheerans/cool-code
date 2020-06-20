@@ -26,9 +26,9 @@ public class SQLInjectionScannerUtil {
 			String fieldVal = "";
 			String modVal = "";
 			for (Field fld : fields) {
-				if (		(false == Modifier.isTransient(fld.getModifiers()))
-					&& 	(false == Modifier.isFinal(fld.getModifiers()))
-					&& 	(fld.getType().equals(String.class))) {					
+				if (	(false == Modifier.isTransient(fld.getModifiers())) && 	
+				    	(false == Modifier.isFinal(fld.getModifiers())) && 	
+				    	(fld.getType().equals(String.class))) {					
 					try {
 						if(fld.getName().equals(ControllerConstants.CRUDAFIELDNAME)){
 							continue;
@@ -59,9 +59,10 @@ public class SQLInjectionScannerUtil {
 		Class current = clazz;
 		if(null != current){
 			outArr.addAll(Arrays.asList(current.getDeclaredFields()));
-			while(current.getSuperclass()!=null){ // we don't want to process Object.class				
-			    current = current.getSuperclass();			    
-			    outArr.addAll(Arrays.asList(current.getDeclaredFields()));
+			while(current.getSuperclass()!=null){ 
+				// we don't want to process Object.class				
+			    	current = current.getSuperclass();			    
+				outArr.addAll(Arrays.asList(current.getDeclaredFields()));
 			}
 		}
 		return outArr;
