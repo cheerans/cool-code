@@ -17,7 +17,7 @@ public class FormUtils {
 	
 	private static final Log log = LogFactory.getLog(FormUtils.class);
 	
-	public static String regExSQLInject = "(script )|(&lt;)|(&gt;)|(%3c)|(%3e)|(SLEEP )|(TRUNCATE )|(VERSION )|(JOIN )|(DROP )|(ORDER )|(SELECT )|(UPDATE )|(INSERT )|(DELETE )|(GRANT )|(REVOKE )|(UNION )|(OR )|(&amp;lt;)|(&amp;gt;)|(;)";
+	public static String regExSQLInject = "(script )|(&lt;)|(&gt;)|(%3c)|(%3e)|( SLEEP )|( TRUNCATE )|( VERSION )|( JOIN )|( DROP )|( ORDER )|( SELECT )|( UPDATE )|( INSERT )| ( DELETE )|( GRANT )|( REVOKE )|( UNION )|( OR )|(&amp;lt;)|(&amp;gt;)|(;)";
 	
 	
 	// This method is not to be used directly --- Made it public only for the sake JUNIT test temporarily
