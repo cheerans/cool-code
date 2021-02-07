@@ -5,11 +5,11 @@ import javax.mail.internet.*;
 public class SendMailBySite {
  public static void main(String[] args) {
 
-   String host="mail.fmsolutions.tech";
-   final String user="customerservice@fmsolutions.tech";//change accordingly
-   final String password="7dRR5bmKoCQH";//change accordingly
+   String host="mail.mymailhost.tech";
+   final String user="info@mymailhost.com";//change accordingly
+   final String password="";//change accordingly
   
-   String to="cheeran@hotmail.com";//change accordingly
+   String to="abc@dsfg.com";//change accordingly
 
    //Get the session object
    Properties props = new Properties();
