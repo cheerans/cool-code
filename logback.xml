@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	  <property name="APP_NAME" value="sample-server"/>
+    <springProperty name="PORT" scope="context" source="server.port"/>
+    <property name="PORT" scope="context" value="${PORT:-SPRING-INIT}"/>
+    <springProperty name="HOSTNAME" scope="context" source="spring.instance.hostname"/>
+	<property name="HOME_LOG_PATH" value="../logs/${APP_NAME}/"/>
+    <property name="HOME_LOG_TRACE" value="${APP_NAME}-trace-${PORT}.log"/>	
+    <property name="HOME_LOG_DEBUG" value="${APP_NAME}-debug-${PORT}.log"/>
+    <property name="HOME_LOG_INFO" value="${APP_NAME}-info-${PORT}.log"/>
+    <property name="HOME_LOG_TRACE_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-trace-${PORT}-%d{yyyy-MM-dd}.%i.log"/>    
+    <property name="HOME_LOG_DEBUG_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-debug-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
+    <property name="HOME_LOG_INFO_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-info-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
+    <property name="LOG_PATTERN" value="%d{MM-dd-yyyy HH:mm:ss.SSS} [${HOSTNAME}:${PORT}] [%X{X-B3-TraceId:-}] [%thread] %-5level %logger{36}.%M:%line - %msg%n"/> 
+    <logger name="com.ssnc" level="TRACE"/>
+	<appender name="ConsoleDebug" class="ch.qos.logback.core.ConsoleAppender">
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>ALL</level>
+	    </filter>	
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+	      <evaluator>
+	        <expression>return 	formattedMessage.contains("com.netflix.discovery") || 
+	        					logger.contains("org.springframework.cloud.sleuth.zipkin2") || 
+	        					formattedMessage.contains("api/v2/spans") ||	        						        					        				
+	        					logger.contains("BaseLoadBalancer") || 
+	        					logger.contains("WebappClassLoaderBase") ||
+	        					logger.contains("MbeansDescriptorsIntrospectionSource") ||
+	        					logger.contains("DynamicServerListLoadBalancer") || 
+	        					logger.contains("netflix.discovery") || 
+	        					formattedMessage.contains("DiscoveryClient") ||
+	        					logger.contains("DefaultClientConnection");</expression>
+	      </evaluator>
+	      <OnMismatch>NEUTRAL</OnMismatch>
+	      <OnMatch>DENY</OnMatch>
+	    </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="FileTrace" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG_PATH}${HOME_LOG_TRACE}</file>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>TRACE</level>
+	    </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG_PATH}${HOME_LOG_TRACE_ARCHIVE}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>500MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB,it will delete old archived file -->
+            <totalSizeCap>500GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>    
+    <appender name="FileDebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG_PATH}${HOME_LOG_DEBUG}</file>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>DEBUG</level>
+	    </filter>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+	      <evaluator>
+	        <expression>return 	formattedMessage.contains("com.netflix.discovery") || 
+	        					logger.contains("org.springframework.cloud.sleuth.zipkin2") || 
+	        					logger.contains("BaseLoadBalancer") || 
+	        					logger.contains("WebappClassLoaderBase") ||
+	        					logger.contains("MbeansDescriptorsIntrospectionSource") ||
+	        					logger.contains("DynamicServerListLoadBalancer") || 
+	        					logger.contains("netflix.discovery") || 
+	        					formattedMessage.contains("DiscoveryClient") ||
+	        					logger.contains("DefaultClientConnection");</expression>
+	      </evaluator>
+	      <OnMismatch>NEUTRAL</OnMismatch>
+	      <OnMatch>DENY</OnMatch>
+	    </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG_PATH}${HOME_LOG_DEBUG_ARCHIVE}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB,it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="FileInfo" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG_PATH}${HOME_LOG_INFO}</file>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>INFO</level>
+	    </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG_PATH}${HOME_LOG_INFO_ARCHIVE}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB,it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+	<springProfile name="local">
+	    <root level="INFO">
+ 	        <appender-ref ref="ConsoleDebug"/>
+	        <appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>
+			<appender-ref ref="FileInfo"/>
+	    </root>
+	</springProfile>
+	<springProfile name="dev,clddev">
+	    <root level="INFO">
+	    	<appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>
+			<appender-ref ref="FileInfo"/>
+	    </root>
+	</springProfile>	
+	<springProfile name="uat,clduat">
+	    <root level="INFO">
+	    	<appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>
+			<appender-ref ref="FileInfo"/>
+	    </root>
+	</springProfile>		
+    <springProfile name="!local,!dev,!clddev,!uat,!clduat">
+	    <root level="INFO">	    
+	    	<appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>
+			<appender-ref ref="FileInfo"/>
+	    </root>	    	
+	</springProfile>
+</configuration>
