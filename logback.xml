@@ -8,9 +8,11 @@
     <property name="HOME_LOG_TRACE" value="${APP_NAME}-trace-${PORT}.log"/>	
     <property name="HOME_LOG_DEBUG" value="${APP_NAME}-debug-${PORT}.log"/>
     <property name="HOME_LOG_INFO" value="${APP_NAME}-info-${PORT}.log"/>
+    <property name="HOME_LOG_ERROR" value="${APP_NAME}-info-${PORT}.log"/>
     <property name="HOME_LOG_TRACE_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-trace-${PORT}-%d{yyyy-MM-dd}.%i.log"/>    
     <property name="HOME_LOG_DEBUG_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-debug-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
-    <property name="HOME_LOG_INFO_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-info-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
+    <property name="HOME_LOG_INFO_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-info-${PORT}-%d{yyyy-MM-dd}.%i.log"/> 
+    <property name="HOME_LOG_ERROR_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-error-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
     <property name="LOG_PATTERN" value="%d{MM-dd-yyyy HH:mm:ss.SSS} [${HOSTNAME}:${PORT}] [%X{X-B3-TraceId:-}] [%thread] %-5level %logger{36}.%M:%line - %msg%n"/> 
     <logger name="com.ssnc" level="TRACE"/>
 	<appender name="ConsoleDebug" class="ch.qos.logback.core.ConsoleAppender">
@@ -106,32 +108,58 @@
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
+    <appender name="FileError" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG_PATH}${HOME_LOG_ERROR}</file>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>ERROR</level>
+	    </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG_PATH}${HOME_LOG_ERROR_ARCHIVE}</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>500MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB,it will delete old archived file -->
+            <totalSizeCap>500GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>	
 	<springProfile name="local">
 	    <root level="INFO">
  	        <appender-ref ref="ConsoleDebug"/>
 	        <appender-ref ref="FileTrace"/>
-			<appender-ref ref="FileDebug"/>
+		        <appender-ref ref="FileError"/>
+		        <appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>		        
 			<appender-ref ref="FileInfo"/>
 	    </root>
 	</springProfile>
 	<springProfile name="dev,clddev">
 	    <root level="INFO">
 	    	<appender-ref ref="FileTrace"/>
-			<appender-ref ref="FileDebug"/>
+		        <appender-ref ref="FileError"/>
+		        <appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>		        
 			<appender-ref ref="FileInfo"/>
 	    </root>
 	</springProfile>	
 	<springProfile name="uat,clduat">
 	    <root level="INFO">
 	    	<appender-ref ref="FileTrace"/>
-			<appender-ref ref="FileDebug"/>
+		        <appender-ref ref="FileError"/>
+		        <appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>		        
 			<appender-ref ref="FileInfo"/>
 	    </root>
 	</springProfile>		
     <springProfile name="!local,!dev,!clddev,!uat,!clduat">
 	    <root level="INFO">	    
 	    	<appender-ref ref="FileTrace"/>
-			<appender-ref ref="FileDebug"/>
+		        <appender-ref ref="FileError"/>
+		        <appender-ref ref="FileTrace"/>
+			<appender-ref ref="FileDebug"/>		        
 			<appender-ref ref="FileInfo"/>
 	    </root>	    	
 	</springProfile>
