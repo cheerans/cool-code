@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!-- This is the Maven Parent Project. All projects derive from it	 -->
+	<groupId>com.your.proj.component</groupId>
+	<artifactId>your_project-api-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>maven-parent</name>
+	<description>Maven parent project, to help FORCE maintain same standard includes for all projects</description>
+	<version>0.0.1-SNAPSHOT</version>
+	<organization>
+		<name>YOUR COMP</name>
+	</organization>		
+<!-- 	
+		Needed two enhancements to avoid duplicate code and Data transfer inconsistency - between Microservices. 
+-->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.5.RELEASE</version>
+		<relativePath />
+	</parent>
+	<properties>
+		<!-- below variables comes from parent -->
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR5</spring-cloud.version>
+		<log4j2.version>2.16.0</log4j2.version> 
+	</properties>
+	<dependencies>
+		<!-- This section contains dependencies that are included in all projects by default -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+		<dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId></dependency>
+		<dependency><groupId>org.projectlombok</groupId><artifactId>lombok</artifactId><optional>true</optional></dependency> 		
+		<dependency><groupId>janino</groupId><artifactId>janino</artifactId><version>2.5.10</version></dependency>
+		<dependency><groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>  
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- 
+				This section can be used to manage version number, exclusively. Means Not forcibly included .. 
+			    like above, but if subproject uses it, use this version	is the directive 
+			 -->	 		
+			<dependency><groupId>commons-collections</groupId><artifactId>commons-collections</artifactId><version>3.2.1</version></dependency>
+			<dependency><groupId>com.ssnc.factreporting.dataapi</groupId><artifactId>fact-reporting-common-lib</artifactId><version>0.0.1-SNAPSHOT</version></dependency>
+			<dependency><groupId>io.springfox</groupId><artifactId>springfox-swagger2</artifactId><version>2.9.2</version></dependency>
+		</dependencies>
+	</dependencyManagement>
+	<distributionManagement>
+	  <repository>
+	    <id>release</id>
+		<name>yr-prj-release-repo</name>
+	    <url>http://your.net.dstcorp.net/artifactory/your-global-rep-release-local</url>
+		<snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+		<releases>
+			<enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+		</releases>
+	  </repository>
+	  <snapshotRepository>
+	    <id>snapshots</id>
+		<name>your-prj-snapshot-repo</name>
+	    <url>http://your.net.dstcorp.net/artifactory/your-prj-snapshot-local</url>
+		<snapshots>
+			<enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+		</snapshots>
+		<releases>
+			<enabled>false</enabled>
+		</releases>
+	  </snapshotRepository>
+	</distributionManagement>
+	<build>
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>	
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>		  	
+		</plugins>
+	</build>			
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>maven-repos</name>
+			<url>http://your.net.dstcorp.net/artifactory/maven-repos</url>
+		</repository>
+	</repositories>	
+</project>
