@@ -1,0 +1,38 @@
+var reqUrl=pm.request.url;
+var pathArray = reqUrl.toString().split('/');
+var loginUrl = "";
+if(pathArray[4] == 'v1' || pathArray[4] == 'v0'){
+    loginUrl = pathArray[0] + '//' + pathArray[2] + '/' + pathArray[3] + '/' + pathArray[4] + '/' + 'factent/ent';
+}else{
+    loginUrl = pathArray[0] + '//' + pathArray[2] + '/' + pathArray[3] + '/' + 'rotent/ent';
+}
+console.log('Calling for Entitlement - ', loginUrl);
+userName=pm.request.headers.get("username");
+var expiresOn = pm.variables.get('ExpiresOn');
+if (!expiresOn || new Date(expiresOn) <= new Date()) {
+	var data = pm.request.body;
+	body = data[data.mode];
+	jsonData = JSON.parse(body);
+	pm.sendRequest({
+		url: loginUrl,
+		method: 'POST',
+		header: {
+			'content-type': 'application/json',
+            'ssc-username': userName
+		},
+		body: {
+			mode: 'raw',
+			raw: JSON.stringify({"appName": jsonData.appName})
+			
+		}
+	}, function (err, res) {
+        console.log(err ? err : res.json());
+        if(!err){            
+            jwt = 'Bearer ' + res.json().responseData.jwt;
+            console.log(jwt);
+            pm.request.headers.add({key: 'X-Auth-FactRpt', value: jwt});
+            var expiresOn = new Date(0);
+            pm.environment.set('ExpiresOn', expiresOn);
+        }
+	});
+}
