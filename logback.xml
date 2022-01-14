@@ -14,7 +14,7 @@
     <property name="HOME_LOG_INFO_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-info-${PORT}-%d{yyyy-MM-dd}.%i.log"/> 
     <property name="HOME_LOG_ERROR_ARCHIVE" value="archive/${APP_NAME}/${APP_NAME}-error-${PORT}-%d{yyyy-MM-dd}.%i.log"/>
     <property name="LOG_PATTERN" value="%d{MM-dd-yyyy HH:mm:ss.SSS} [${HOSTNAME}:${PORT}] [%X{X-B3-TraceId:-}] [%thread] %-5level %logger{36}.%M:%line - %msg%n"/> 
-    <logger name="com.ssnc" level="TRACE"/>
+    <logger name="com.abc" level="TRACE"/>
 	<appender name="ConsoleDebug" class="ch.qos.logback.core.ConsoleAppender">
 	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 	        <level>ALL</level>
